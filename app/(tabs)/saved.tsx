@@ -34,7 +34,7 @@ const Saved = () => {
         const movieDetails = await Promise.all(
           movieIds.map((id) => fetchMovieById(id))
         );
-        console.log("movie details: ", movieDetails)
+        // console.log("movie details: ", movieDetails)
         setSavedMovies(movieDetails);
       } catch (error) {
         console.error("Error fetching saved movies:", error);
@@ -45,7 +45,7 @@ const Saved = () => {
     fetchSavedMovies();
   }, [user]);
 
-  console.log("Saved movies:", savedMovies);
+  // console.log("Saved movies:", savedMovies);
 
   return (
     <View className="bg-primary flex-1">

@@ -1,50 +1,114 @@
-# Welcome to your Expo app 👋
+# 🎬 Movie App - Expo React Native
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A beautiful movie app built with **React Native + Expo**, inspired by [JavaScript Mastery](https://github.com/adrianhajdin).  
+This app allows users to discover movies, view details, and save them to favorites using Appwrite.
 
-## Get started
+## ⚙️ Tech Stack
 
-1. Install dependencies
+- Expo (React Native)
+- TypeScript
+- TMDB API
+- Appwrite
+- NativeWind (Tailwind for React Native)
+- Context API (Auth)
 
-   ```bash
-   npm install
-   ```
+---
 
-2. Start the app
+## 📱 Screenshots
 
-   ```bash
-    npx expo start
-   ```
+### Login Page
+<img src="./screenshoots/IMG_2808.PNG" width="250" />
 
-In the output, you'll find options to open the app in a
+### Register Page\
+<img src="./screenshoots/IMG_2809.PNG" width="250" />
 
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
+### Home Page  
+<img src="./screenshoots/IMG_2811.PNG" width="250" />
 
-You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
+### Detail Page  
+<img src="./screenshoots/IMG_2815.PNG" width="250" />
 
-## Get a fresh project
+### Saved Movie Page  
+<img src="./screenshoots/IMG_2814.PNG" width="250" />
 
-When you're ready, run:
+### Profile Page (Update soon)
+<img src="./screenshoots/IMG_2810.PNG" width="250" />
+
+---
+
+## 🚀 Getting Started
+
+### 1. Clone Repository
 
 ```bash
-npm run reset-project
+git clone https://github.com/alfiansaheriks/movieflix.git
+cd movie-app
 ```
 
-This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
+### 2. Install Dependencies
 
-## Learn more
+```bash
+npm install
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+### 3. Run Project with Expo
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```bash
+npx expo start
+```
 
-## Join the community
+> 📱 Open the QR code using **Expo Go** on your iPhone or Android to preview the app.
 
-Join our community of developers creating universal apps.
+---
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+## 🔐 Environment Variables
+
+Create a `.env` file in the root directory:
+
+```env
+TMDB_API_KEY=your_tmdb_api_key
+APPWRITE_ENDPOINT=https://your-appwrite-endpoint.com
+APPWRITE_PROJECT_ID=your_project_id
+APPWRITE_DATABASE_ID=your_database_id
+APPWRITE_COLLECTION_ID=your_collection_id
+```
+
+---
+
+## 📁 Folder Structure
+
+```
+├── assets/              # Static images and icons
+├── components/          # Reusable UI components
+├── constants/           # Icons, images, theme
+├── contexts/            # Auth context
+├── services/            # API integration (TMDB, Appwrite)
+├── app/                 # Expo router structure
+├── constants/
+├── interfaces/
+└── README.md
+```
+
+---
+
+## 📦 Features
+
+- 🔍 Search movies by keyword
+- 📄 View movie details
+- 💾 Save movies to favorites
+- 🔐 Authentication with context
+- 🎨 Clean UI with NativeWind
+- ⚙️ Appwrite backend integration
+
+---
+
+## 🙏 Credits
+
+This project was built with guidance and inspiration from  
+🎓 **JavaScript Mastery** - [https://www.jsmastery.pro/](https://www.jsmastery.pro/)
+
+---
+
+## ✍️ Author
+
+Made with ❤️ by **@alfiansaheriks**
