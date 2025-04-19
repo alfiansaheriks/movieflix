@@ -9,9 +9,11 @@ import useFetch from "@/services/useFetch";
 import MovieCard from "@/components/MovieCard";
 import { getTrendingMovies } from "@/services/appwrite";
 import TrendingCard from "@/components/TrendingCard";
+import { useAuth } from "@/contexts/AuthContext";
 
 export default function Index() {
   const router = useRouter();
+  const {user, loading} = useAuth();
 
   const {
     data: trendingMovies,
@@ -43,7 +45,7 @@ export default function Index() {
       >
         <Image source={icons.logo} className="w-12 h-10 mt-20 mb-5 mx-auto" />
 
-        {moviesLoading || trendingLoading ? (
+        {moviesLoading || trendingLoading || loading ? (
           <ActivityIndicator
             size="large"
             color="#000fff"
@@ -60,7 +62,10 @@ export default function Index() {
 
             {trendingMovies && (
               <View className="mt-10">
-                <Text className="text-lg text-white font-bold mt-5 mb-3">Trending Movies</Text>
+        
+                <Text className="text-lg text-white font-bold mt-5 mb-3">
+                  {user? `Trending Movies for ${user.name}` : 'Trending Movies'}
+                </Text>
 
                 <FlatList 
                   horizontal

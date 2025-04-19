@@ -6,11 +6,10 @@ import { router } from "expo-router";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { getCurrentUser, loginAccount, logoutAccount } from "@/services/appwrite";
 import { Models } from "react-native-appwrite";
+import { useAuth } from "@/contexts/AuthContext";
 
 const Profile = ({ email, password }: LoginProps) => {
-  const [user, setUser] = useState<Models.User<Models.Preferences> | null>(
-    null
-  );
+  const {user, setUser} = useAuth();
   const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
@@ -47,17 +46,21 @@ const Profile = ({ email, password }: LoginProps) => {
         const currentUser = await getCurrentUser();
         setUser(currentUser);
       } catch (error) {
-        console.log("Error fetching user:", error);
+        // console.log("Error fetching user:", error);
+        return null;
       }
     };
 
     checkUser();
   }, []);
 
-  const handleLogout = async () => {
+const handleLogout = async () => {
     try {
       await logoutAccount();
       setUser(null);
+
+      router.reload();
+      console.log("Logout successful");
     } catch (error) {
       console.log("Error logging out:", error);
     }

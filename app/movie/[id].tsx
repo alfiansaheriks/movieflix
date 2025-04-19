@@ -1,9 +1,12 @@
 import { View, Text, ScrollView, Image, TouchableOpacity } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { router, useLocalSearchParams } from "expo-router";
 import useFetch from "@/services/useFetch";
 import { fetchMovieDetails } from "@/services/api";
 import { icons } from "@/constants/icons";
+import { getSavedMovies, saveMovie } from "@/services/appwrite";
+import { useAuth } from "@/contexts/AuthContext";
+import { FontAwesome } from "@expo/vector-icons";
 
 interface MovieInfoProps {
   label: string;
@@ -12,20 +15,64 @@ interface MovieInfoProps {
 
 const MovieInfo = ({ label, value }: MovieInfoProps) => (
   <View className="flex-col items-start justify-center mt-5">
-    <Text className="text-light-200 font-normal text-sm">
-      {label}
-    </Text>
+    <Text className="text-light-200 font-normal text-sm">{label}</Text>
     <Text className="text-light-100 font-bold text-sm mt-2">
-      {value || 'N/A'}
+      {value || "N/A"}
     </Text>
   </View>
-)
+);
 
 const MovieDetails = () => {
-  const {id} = useLocalSearchParams();
+  const { id } = useLocalSearchParams();
+  const { user } = useAuth();
+  const [isSaved, setIsSaved] = React.useState(false);
 
-  const {data: movie, loading} = useFetch(() => 
-    fetchMovieDetails(id as string));
+  const { data: movie, loading } = useFetch(() =>
+    fetchMovieDetails(id as string)
+  );
+
+  useEffect(() => {
+    const checkSavedMovies = async () => {
+      if (!user) {
+        return;
+      }
+
+      try {
+        const savedMovies = await getSavedMovies(user.$id);
+
+        const alreadySaved = savedMovies.some(
+          (savedMovie: any) => savedMovie.movie_id === movie?.id
+        );
+        setIsSaved(alreadySaved);
+
+        // console.log("Saved movies:", savedMovies);
+      } catch (error) {
+        console.error("Error fetching saved movies:", error);
+      }
+    };
+
+    checkSavedMovies();
+  }, [user, movie]);
+
+  const handleSaveMovie = async (movie?: MovieDetails) => {
+    if (!user) {
+      router.push("/profile");
+      return;
+    }
+
+    if (!movie) {
+      console.log("Movie not found");
+      return;
+    }
+
+    try {
+      await saveMovie(movie, user.$id);
+      alert("Movie saved successfully!");
+      setIsSaved(true);
+    } catch (error) {
+      alert("Failed to save movie");
+    }
+  };
   return (
     <View className="bg-primary flex-1">
       <ScrollView contentContainerStyle={{ paddingBottom: 80 }}>
@@ -37,34 +84,82 @@ const MovieDetails = () => {
             className="w-full h-[550px]"
             resizeMode="stretch"
           />
+          <View>
+            {/* Saved Button */}
+            {movie && user && (
+              <TouchableOpacity
+                className="absolute right-5 -top-6 bg-dark-100 rounded-full p-2"
+                onPress={() => handleSaveMovie(movie)}
+              >
+                {isSaved ? (
+                  <FontAwesome name="bookmark" size={24} color="#AB8BFF" />
+                ) : (
+                  <Image source={icons.save} className="size-8" />
+                )}
+              </TouchableOpacity>
+            )}
+          </View>
         </View>
 
         <View className="flex-col items-start justify-center mt-5 px-5">
           <Text className="text-white font-bold text-xl">{movie?.title}</Text>
           <View className="flex-row items-center gap-x-1 mt-2">
-            <Text className="text-light-200 text-sm">{movie?.release_date?.split('-')[0]}</Text>
+            <Text className="text-light-200 text-sm">
+              {movie?.release_date?.split("-")[0]}
+            </Text>
             <Text className="text-light-200 text-sm">{movie?.runtime}m</Text>
           </View>
 
           <View className="flex-row items-center bg-dark-100 px-2 py-1 rounded-md gap-x-1 mt-2">
             <Image source={icons.star} className="size-4" />
-            <Text className="text-white font-bold text-sm">{Math.round(movie?.vote_average ?? 0)}/10</Text>
-            <Text className="text-light-200 text-sm">({movie?.vote_count} votes)</Text>
+            <Text className="text-white font-bold text-sm">
+              {Math.round(movie?.vote_average ?? 0)}/10
+            </Text>
+            <Text className="text-light-200 text-sm">
+              ({movie?.vote_count} votes)
+            </Text>
           </View>
 
           <MovieInfo label="Overview" value={movie?.overview} />
-          <MovieInfo label="Genres" value={movie?.genres?.map((genre: any) => genre.name).join(' - ') || 'N/A'} />
+          <MovieInfo
+            label="Genres"
+            value={
+              movie?.genres?.map((genre: any) => genre.name).join(" - ") ||
+              "N/A"
+            }
+          />
           <View className="flex flex-row justify-between w-1/2">
-            <MovieInfo label="Budget" value={`$${(movie?.budget ?? 0) / 1_000_000} million`} />
-            <MovieInfo label="Revenue" value={`$${Math.round((movie?.revenue ?? 0) / 1_000_000 )} million`} />
+            <MovieInfo
+              label="Budget"
+              value={`$${(movie?.budget ?? 0) / 1_000_000} million`}
+            />
+            <MovieInfo
+              label="Revenue"
+              value={`$${Math.round(
+                (movie?.revenue ?? 0) / 1_000_000
+              )} million`}
+            />
           </View>
 
-          <MovieInfo label="Production Companies" value={movie?.production_companies.map((c) => c.name).join(' - ') || 'N/A'} />
+          <MovieInfo
+            label="Production Companies"
+            value={
+              movie?.production_companies.map((c) => c.name).join(" - ") ||
+              "N/A"
+            }
+          />
         </View>
       </ScrollView>
 
-      <TouchableOpacity className="absolute bottom-5 left-0 right-0 mx-5 bg-accent rounded-lg py-3.5 flex flex-row items-center justify-center z-50" onPress={router.back}>
-        <Image source={icons.arrow} className="size-5 mr-1 mt-0.5 rotate-180" tintColor="#fff" />
+      <TouchableOpacity
+        className="absolute bottom-5 left-0 right-0 mx-5 bg-accent rounded-lg py-3.5 flex flex-row items-center justify-center z-50"
+        onPress={router.back}
+      >
+        <Image
+          source={icons.arrow}
+          className="size-5 mr-1 mt-0.5 rotate-180"
+          tintColor="#fff"
+        />
         <Text className="text-white font-semibold text-base">Go Back</Text>
       </TouchableOpacity>
     </View>

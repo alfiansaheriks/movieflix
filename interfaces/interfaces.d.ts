@@ -94,3 +94,10 @@ interface User {
   registration: string;
   status: string;
 }
+
+interface SavedMovie {
+  id: number;
+  user_id: string;
+  title: string;
+  poster_path: string;
+}
